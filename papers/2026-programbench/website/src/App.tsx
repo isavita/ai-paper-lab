@@ -1,16 +1,24 @@
 import {
   AlertTriangle,
+  ArrowRight,
   BarChart3,
-  BookOpen,
   Boxes,
+  CheckCircle2,
   Code2,
+  ExternalLink,
+  FileCode2,
   FlaskConical,
+  Gauge,
+  Github,
   LayoutDashboard,
-  ListChecks,
   MapIcon,
   Network,
   ScrollText,
+  SearchCheck,
+  ShieldCheck,
   Sparkles,
+  TerminalSquare,
+  XCircle,
 } from "lucide-react";
 import { useState } from "react";
 import { Callout } from "./components/Callout";
@@ -42,16 +50,45 @@ import { TaskDistribution } from "./visuals/TaskDistribution";
 import { TestGenerationLoop } from "./visuals/TestGenerationLoop";
 
 const navItems: NavItem[] = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "map", label: "Paper Map", icon: MapIcon },
+  { id: "overview", label: "Fast Read", icon: LayoutDashboard },
   { id: "core", label: "Core Idea", icon: Sparkles },
-  { id: "visuals", label: "Visuals", icon: Network },
+  { id: "visuals", label: "Diagrams", icon: Network },
+  { id: "experiments", label: "Results", icon: BarChart3 },
+  { id: "demo", label: "Try It", icon: FlaskConical },
   { id: "implementation", label: "Implementation", icon: Code2 },
-  { id: "demo", label: "Demo", icon: FlaskConical },
-  { id: "experiments", label: "Experiments", icon: BarChart3 },
+  { id: "map", label: "Paper Map", icon: MapIcon },
   { id: "critique", label: "Critique", icon: AlertTriangle },
-  { id: "limitations", label: "Limitations", icon: ListChecks },
   { id: "references", label: "References", icon: ScrollText },
+];
+
+const fastPipeline = [
+  {
+    icon: TerminalSquare,
+    title: "1. Black-box executable",
+    text: "Agent gets a compiled program plus usage docs. No source. No internet. No skeleton.",
+  },
+  {
+    icon: SearchCheck,
+    title: "2. Probe behavior",
+    text: "Run the binary with crafted inputs to infer what it actually does.",
+  },
+  {
+    icon: FileCode2,
+    title: "3. Reconstruct codebase",
+    text: "Write original source plus a build script in any language. Pure cleanroom rebuild.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "4. Hidden behavioral tests",
+    text: "Candidate vs. gold executable: stdout, stderr, exit code, files. All must match.",
+  },
+];
+
+const quickFacts = [
+  { icon: CheckCircle2, label: "Tasks evaluated", value: "200 real OSS projects" },
+  { icon: XCircle, label: "Models that fully solved a task", value: "0 of 9" },
+  { icon: Gauge, label: "Best partial score", value: "Claude Opus 4.7 — 3% near-solve" },
+  { icon: Boxes, label: "Median reference project", value: "~8.6k LOC, 50 files" },
 ];
 
 const reconstructionPseudocode = `for task in ProgramBench:
@@ -82,16 +119,27 @@ const evaluationPseudocode = `def behavioral_test(candidate, gold, invocation, s
 function Overview() {
   return (
     <section className="page-section">
-      <SectionHeader eyebrow="ProgramBench Lab" title={paperMetadata.title}>
-        {paperMetadata.mainContribution}
-      </SectionHeader>
-
-      <div className="metadata-strip">
-        <span>{paperMetadata.year}</span>
-        <span>{paperMetadata.venue}</span>
-        <span>arXiv:{paperMetadata.arxivId}</span>
-        <span>{paperMetadata.domain}</span>
-      </div>
+      <section className="hero">
+        <div className="hero-eyebrow">
+          <span>{paperMetadata.year}</span>
+          <span>{paperMetadata.venue}</span>
+          <span>arXiv:{paperMetadata.arxivId}</span>
+        </div>
+        <h1 className="hero-title">{paperMetadata.title}</h1>
+        <p className="hero-tldr">
+          <strong>TL;DR.</strong> Give a model a compiled program plus its docs and ask it to rebuild the source from
+          scratch in a no-internet sandbox. Across 200 real open-source projects and 9 frontier models, <em>none</em>
+          {" "}fully solved a single task. The best model only got close on 3% of them.
+        </p>
+        <div className="hero-cta">
+          <a className="hero-button primary" href={paperMetadata.paperUrl} target="_blank" rel="noreferrer">
+            <ExternalLink size={16} /> Read the paper
+          </a>
+          <a className="hero-button" href={paperMetadata.codeUrl} target="_blank" rel="noreferrer">
+            <Github size={16} /> Source repo
+          </a>
+        </div>
+      </section>
 
       <div className="metric-grid">
         {headlineStats.map((stat) => (
@@ -99,46 +147,82 @@ function Overview() {
         ))}
       </div>
 
-      <Callout title="One-paragraph summary" tone="info">
-        <p>
-          ProgramBench evaluates software engineering agents on cleanroom program reconstruction. Each task gives an
-          agent a compiled executable and usage documentation, but no source code, internet, or prescribed skeleton. The
-          agent must probe the executable, infer behavior, write an original codebase, and produce a build script. Hidden
-          behavioral tests compare candidate and reference executables. Across 200 tasks and 9 models, the paper reports
-          no fully solved task, while revealing that model solutions tend to be shorter and more monolithic than the
-          original human-written projects.
-        </p>
-      </Callout>
+      <section className="content-band">
+        <h3>How the benchmark works in 4 steps</h3>
+        <p className="band-lede">Read left-to-right; each step strips a kind of help an agent normally relies on.</p>
+        <div className="flow-strip">
+          {fastPipeline.map((step, idx) => {
+            const Icon = step.icon;
+            return (
+              <div className="flow-step" key={step.title}>
+                <div className="flow-icon">
+                  <Icon size={22} />
+                </div>
+                <h4>{step.title}</h4>
+                <p>{step.text}</p>
+                {idx < fastPipeline.length - 1 ? <ArrowRight className="flow-arrow" size={18} /> : null}
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       <div className="split-grid">
-        <section className="text-panel">
-          <h3>What existed before</h3>
+        <section className="text-panel before-after">
+          <span className="chip chip-muted">Before</span>
+          <h3>Patching, not building</h3>
           <p>
-            Earlier coding benchmarks commonly measured function generation, issue resolution inside an existing
-            repository, environment setup, or skeleton-based repository filling. Those settings constrain much of the
-            software design problem in advance.
+            Function generation, issue resolution, and skeleton-filling benchmarks let the model lean on an existing
+            repo structure, names, and tests.
           </p>
         </section>
-        <section className="text-panel">
-          <h3>What ProgramBench changes</h3>
+        <section className="text-panel before-after">
+          <span className="chip chip-blue">ProgramBench</span>
+          <h3>Specification recovery + cleanroom build</h3>
           <p>
-            ProgramBench removes the source structure and evaluates executable behavior. The model chooses the language,
-            build system, abstractions, probing strategy, and implementation architecture.
+            The model has to <em>infer</em> the spec from a binary, then choose language, architecture, modules, and
+            build pipeline on its own.
           </p>
         </section>
       </div>
 
       <section className="content-band">
-        <h3>Key takeaways</h3>
+        <h3>5 things to take away</h3>
         <div className="takeaway-grid">
-          {keyTakeaways.map((takeaway) => (
+          {keyTakeaways.map((takeaway, i) => (
             <article className="takeaway" key={takeaway}>
-              <BookOpen size={18} />
+              <span className="takeaway-num">{i + 1}</span>
               <p>{takeaway}</p>
             </article>
           ))}
         </div>
       </section>
+
+      <section className="content-band">
+        <h3>Quick facts</h3>
+        <div className="fact-grid">
+          {quickFacts.map((fact) => {
+            const Icon = fact.icon;
+            return (
+              <article className="fact" key={fact.label}>
+                <Icon size={20} />
+                <div>
+                  <span>{fact.label}</span>
+                  <strong>{fact.value}</strong>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <Callout title="What the headline result really means" tone="warning">
+        <p>
+          0% resolved doesn't mean models wrote nothing useful. They produce buildable code that passes 30–50% of hidden
+          tests on average, but every project still has at least one behavior the model misses. The gap is in <em>full
+          spec recovery</em>, not in writing code.
+        </p>
+      </Callout>
 
       <section className="content-band">
         <h3>Benchmark mechanics</h3>
@@ -430,11 +514,34 @@ function Critique() {
           ))}
         </div>
       </section>
+
+      <section className="content-band">
+        <h3>Limitations to keep in mind</h3>
+        <div className="limitations-grid">
+          {limitations.map((group) => (
+            <article className="limitation-group" key={group.title}>
+              <h3>{group.title}</h3>
+              <ul>
+                {group.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+        <Callout title="Known gap in this lab" tone="critical">
+          <p>
+            This website explains and simulates the benchmark, but it does not run the official Docker tasks or
+            reproduce model evaluations. That would require the ProgramBench harness, task images, model API access,
+            and substantial compute.
+          </p>
+        </Callout>
+      </section>
     </section>
   );
 }
 
-function Limitations() {
+function _UnusedLimitations() {
   return (
     <section className="page-section">
       <SectionHeader eyebrow="Limitations" title="What ProgramBench Does Not Prove">
@@ -493,7 +600,7 @@ function renderActiveTab(activeTab: TabId) {
     case "critique":
       return <Critique />;
     case "limitations":
-      return <Limitations />;
+      return <Critique />;
     case "references":
       return <References />;
     default:
