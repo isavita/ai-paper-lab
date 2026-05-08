@@ -1,0 +1,62 @@
+# Node dependencies and generated app output
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+coverage/
+**/coverage/
+**/.vite/
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+**/.venv/
+**/venv/
+**/env/
+**/ENV/
+
+# Python caches and build artifacts
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+**/.mypy_cache/
+.ruff_cache/
+**/.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+**/htmlcov/
+build/
+**/build/
+*.egg-info/
+**/*.egg-info/
+
+# TypeScript incremental build metadata
+*.tsbuildinfo
+**/*.tsbuildinfo
+
+# Vite/TypeScript generated config outputs
+vite.config.js
+vite.config.d.ts
+vite.config.js.map
+vite.config.d.ts.map
+**/vite.config.js
+**/vite.config.d.ts
+**/vite.config.js.map
+**/vite.config.d.ts.map
+
+# Local OS/editor and secret files
+.DS_Store
+**/.DS_Store
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example

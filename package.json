@@ -1,0 +1,10 @@
+{
+  "name": "ai-paper-lab",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Personal AI paper reading archive with one interactive lab per paper.",
+  "scripts": {
+    "programbench:dev": "npm --prefix papers/2026-programbench/website run dev",
+    "programbench:build": "npm --prefix papers/2026-programbench/website run build"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "title": "ProgramBench: Can Language Models Rebuild Programs From Scratch?",
+  "authors": [
+    "John Yang",
+    "Kilian Lieret",
+    "Jeffrey Ma",
+    "Parth Thakkar",
+    "Dmitrii Pedchenko",
+    "Sten Sootla",
+    "Emily McMilin",
+    "Pengcheng Yin",
+    "Rui Hou",
+    "Gabriel Synnaeve",
+    "Diyi Yang",
+    "Ofir Press"
+  ],
+  "year": 2026,
+  "venue": "arXiv preprint",
+  "paperUrl": "https://arxiv.org/abs/2605.03546",
+  "arxivId": "2605.03546",
+  "doi": "10.48550/arXiv.2605.03546",
+  "domain": "Software engineering agents; code generation benchmarks; behavioral program reconstruction",
+  "mainContribution": "Introduces ProgramBench, a 200-task benchmark where software engineering agents must rebuild executable behavior from only a compiled program and its documentation, evaluated by hidden behavioral tests generated through agent-driven fuzzing.",
+  "datasets": [
+    "200 open-source executable reconstruction tasks",
+    "248,853 generated behavioral test functions",
+    "ProgramBench generated tests on Hugging Face"
+  ],
+  "metrics": [
+    "% Resolved",
+    "% Tests Passed",
+    "% Almost Resolved (at least 95% tests passed)",
+    "Cheating rate",
+    "Generated test line coverage",
+    "Dummy pass rate",
+    "Model code lines/files/functions/directory depth",
+    "Agent action distribution"
+  ],
+  "codeUrl": "https://github.com/facebookresearch/ProgramBench",
+  "implementedWebsite": "website/",
+  "status": "implemented",
+  "notes": [
+    "Paper PDF was supplied in the repository root and moved to this folder as paper.pdf after implementation files were created.",
+    "The paper reports no model fully resolving any of the 200 tasks; live leaderboard values may change after paper release.",
+    "External repository issues found shortly after release document cleanroom-image documentation gaps, a readable injected executable in one task image, and a Go toolchain mismatch."
+  ]
+}
